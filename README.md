@@ -1,44 +1,4 @@
-Running the Code
-This document provides a step-by-step guide on how to run the code for the system, which includes three layers: Edge Layer, Infrastructure Layer, and Cloud Layer. Each layer runs as a separate service and must be executed in parallel. Follow the instructions below to get started.
-
-Prerequisites
-Node.js Installed: Ensure you have Node.js installed on your system. You can download it from Node.js Official Website.
-
-Code Files: Make sure you have the following files in your project directory:
-
-edgeLayer.js
-infraLayer.js
-appLayer.js
-Frontend Pages: Ensure the associated frontend files are available and correctly linked to the respective layers.
-
-Steps to Run the Code
-Open 3 Terminal Windows:
-
-Each layer needs to run in a separate terminal to work simultaneously.
-
-Start the Edge Layer:
-
-Navigate to the project directory in the first terminal.
-Run the following command:
-node edgeLayer.js
-This starts the edge layer service.
-
-Start the Infrastructure Layer:
-
-In the second terminal, navigate to the same project directory.
-Run the following command:
-node infraLayer.js
-This starts the infrastructure layer service.
-
-Start the Cloud Layer:
-
-In the third terminal, navigate to the same project directory.
-Run the following command:
-node appLayer.js
-This starts the cloud layer service.
-
-Access the Frontend Pages:
-Open the corresponding frontend pages in your web browser for each layer. The pages should be linked to their respective services.# Running the Code
+# Running the Code
 
 This document provides a step-by-step guide on how to run the code for the system, which includes three layers: **Edge Layer**, **Infrastructure Layer**, and **Cloud Layer**. Each layer runs as a separate service and must be executed in parallel. Follow the instructions below to get started.
 
@@ -117,14 +77,3 @@ npm install
 Ensure the frontend files are correctly configured to communicate with the respective backend layers.
 
 ---
-
-
-
-Notes
-Ensure all layers are running simultaneously to avoid communication or data flow issues.
-If you encounter any errors while starting a service, verify the dependencies and check the logs for specific error messages.
-Use a modern web browser for the best frontend compatibility and performance.
-Troubleshooting
-Ports in Use: If a service fails to start due to a port conflict, ensure the ports defined in the code are available or update the port settings in the respective .js files.
-Missing Dependencies: Run npm install in the project directory to install required dependencies.
-Frontend Issues: Ensure the frontend files are correctly configured to communicate with the respective backend layers.
