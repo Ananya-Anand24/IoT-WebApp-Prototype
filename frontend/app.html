@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+    <link rel="stylesheet" href="https://unpkg.com/cal-heatmap@3.7.5/dist/cal-heatmap.css" />
+    <script src="https://unpkg.com/cal-heatmap@3.7.5/dist/cal-heatmap.min.js"></script>
+
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Navigation Buttons -->
+        <div class="navigation-buttons">
+            <a href="edge.html" class="nav-button">Edge</a>
+            <a href="infra.html" class="nav-button">Infra</a>
+        </div>
+
+        <!-- Dashboard Header -->
+        <header class="dashboard-header">
+            <h1>Cloud Dashboard</h1>
+        </header>
+
+        <!-- Tabs Navigation -->
+        <nav class="tabs">
+            <button class="tab-button active" onclick="showTab('home')">Home</button>
+            <button class="tab-button" onclick="showTab('financial-overview')">Financial Overview</button>
+            <button class="tab-button" onclick="showTab('customer-insights')">Customer Insights</button>
+            <button class="tab-button" onclick="showTab('transaction-insights')">Transaction Insights</button>
+            <button class="tab-button" onclick="showTab('operational-analytics')">Operational Analytics</button>
+        </nav>
+
+        <!-- Tabs Content -->
+        <div class="tabs-content">
+            <!-- Home Tab -->
+            <div id="home" class="tab-content active">
+                <h2>Overview</h2>
+                <div class="layout">
+                    <!-- Metrics Section -->
+                    <div class="metrics">
+                        <div class="metric">
+                            <h2>Total Data Transferred</h2>
+                            <p id="totalDataTransferred">Loading...</p>
+                        </div>
+                        <div class="metric">
+                            <h2>Missed Data Packets</h2>
+                            <p id="missedDataPackets">Loading...</p>
+                        </div>
+                        <div class="metric">
+                            <h2>Data Transfer Speed</h2>
+                            <p id="dataTransferSpeed">Loading...</p>
+                        </div>
+                    </div>
+
+                    <!-- Data Transfer Chart -->
+                    <canvas id="dataTransferChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Financial Overview Tab -->
+            <div id="financial-overview" class="tab-content">
+                <h2>Financial Overview</h2>
+                <div class="layout">
+                    <!-- Metrics Section -->
+                    <div class="metrics">
+                        <div class="metric">
+                            <h2>Total Revenue</h2>
+                            <p id="totalRevenue">Loading...</p>
+                        </div>
+                        <div class="metric">
+                            <h2>VAT Collected</h2>
+                            <p id="vatCollected">Loading...</p>
+                        </div>
+                        <div class="metric">
+                            <h2>Number of Transactions</h2>
+                            <p id="numTransactions">Loading...</p>
+                        </div>
+                        <div class="metric">
+                            <h2>Average Transaction Value</h2>
+                            <p id="avgTransactionValue">Loading...</p>
+                        </div>
+                    </div>
+                    <!-- Pie Charts Section -->
+                    <div class="charts">
+                        <canvas id="vatChart"></canvas>
+                        <canvas id="transactionTypeChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Line Chart Section -->
+                <div class="line-chart-container">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Customer Insights Tab -->
+            <div id="customer-insights" class="tab-content">
+                <h2>Customer Insights Dashboard</h2>
+
+                <div class="layout">
+                    <!-- First Row: Metrics Card and Customer Activity Chart -->
+                    <div class="first-row">
+                        <!-- Metrics Card -->
+                        <div class="metrics">
+                            <h2>Total Customers</h2>
+                            <p id="totalCustomers">Loading...</p>
+
+                            <h2>Repeat Customers</h2>
+                            <p id="repeatCustomers">Loading...</p>
+
+                            <h2>Customer Lifetime Value</h2>
+                            <p id="customerLifetimeValue">Loading...</p>
+                        </div>
+
+                        <!-- Customer Activity Chart -->
+                        <canvas id="customerActivityChart"></canvas>
+                    </div>
+
+                    <!-- Second Row: Stacked Charts -->
+                    <div class="charts">
+                        <canvas id="topCustomersChart"></canvas>
+                        <canvas id="transactionFrequencyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <!-- Transaction Insights Tab -->
+            <div id="transaction-insights" class="tab-content">
+                <h2>Transaction Insights</h2>
+
+                <!-- Metrics Section -->
+                <div class="layout">
+                    <div class="first-row">
+                        <div class="metrics">
+                            <h2>Synced Transactions</h2>
+                            <p id="syncedTransactions">Loading...</p>
+                            <h2>Multiple Invoices</h2>
+                            <p id="multipleInvoices">Loading...</p>
+                            <h2>Avg VAT per Transaction</h2>
+                            <p id="avgVAT">Loading...</p>
+                        </div>
+                        <div class="pie-chart">
+                            <!-- Synced vs. Unsynced Transactions -->
+                            <canvas id="syncStatusChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Graphs Section -->
+                <div class="charts">
+                    <!-- Invoice Volume Over Time -->
+                    <canvas id="invoiceVolumeChart"></canvas>
+
+                    <!-- Single vs. Multiple Invoice Transactions -->
+                    <canvas id="invoiceTypeChart"></canvas>
+                </div>
+            </div>
+            <!-- Operational Analytics Tab -->
+            <div id="operational-analytics" class="tab-content">
+                <h2>Operational Analytics</h2>
+                <div class="layout">
+                    <div class="first-row">
+                        <div class="metrics">
+                            <h2>Unique Order Numbers</h2>
+                            <p id="uniqueOrderNumbers">Loading...</p>
+                            <h2>Consolidated Transactions</h2>
+                            <p id="consolidatedTransactions">Loading...</p>
+                            <h2>Non-Consolidated Transactions</h2>
+                            <p id="nonConsolidatedTransactions">Loading...</p>
+                        </div>
+                        <!-- Radial Chart -->
+                        <div class="chart-container">
+                            <canvas id="radialChart"></canvas>
+                        </div>
+                    </div>
+                    <!-- Streamgraph for Consolidated Transactions -->
+                    <div class="graph-container">
+                        <canvas id="streamGraph"></canvas>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab Navigation Logic
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            document.querySelector(`[onclick="showTab('${tabId}')"]`).classList.add('active');
+        }
+
+        const ws = new WebSocket('ws://localhost:5003');
+        let dataStore = [];
+        let revenueChart, vatChart, transactionTypeChart;
+        let customerActivityChart, topCustomersChart, transactionFrequencyChart;
+        let dataTransferChart;
+        let syncStatusChart, invoiceVolumeChart, invoiceTypeChart;
+        let radialChart;
+
+        ws.onmessage = (event) => {
+            const newData = JSON.parse(event.data);
+            updateDataStore(newData);
+            updateDashboard();
+            updateCustomerInsights();
+            updateHomeTab();
+            updateTransactionInsights();
+            updateOperationalAnalytics();
+        };
+
+        function updateDataStore(newData) {
+            const existingDataMap = new Map(dataStore.map(item => [item.Oid, item]));
+            newData.forEach(newItem => {
+                if (existingDataMap.has(newItem.Oid)) {
+                    Object.assign(existingDataMap.get(newItem.Oid), newItem);
+                } else {
+                    dataStore.push(newItem);
+                }
+            });
+            dataStore.sort((a, b) => a.TransactionDate - b.TransactionDate);
+        }
+
+        function updateHomeTab() {
+            const totalDataTransferred = dataStore.length;
+            const missedDataPackets = dataStore.filter(item => item.status === 'missed').length;
+            const dataTransferSpeed = (totalDataTransferred / 5).toFixed(2); // Assuming interval of 5 seconds
+
+            document.getElementById('totalDataTransferred').textContent = `${totalDataTransferred} packets`;
+            document.getElementById('missedDataPackets').textContent = `${missedDataPackets} packets`;
+            document.getElementById('dataTransferSpeed').textContent = `${dataTransferSpeed} packets/sec`;
+
+            updateDataTransferChart();
+        }
+
+        function updateDataTransferChart() {
+            const timestamps = dataStore.map(item => new Date(item.TransactionDate * 1000).toLocaleTimeString());
+            const packetCounts = dataStore.map((_, index) => index + 1);
+
+            if (!dataTransferChart) {
+                const ctx = document.getElementById('dataTransferChart').getContext('2d');
+                dataTransferChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: timestamps,
+                        datasets: [{
+                            label: 'Data Transfer Over Time',
+                            data: packetCounts,
+                            borderWidth: 1,
+                            borderColor: '#29b6f6',
+                            backgroundColor: 'rgba(41, 182, 246, 0.2)'
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Time',
+                                    color: '#ffffff'
+                                },
+                                ticks: { color: '#ffffff' }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Packets Transferred',
+                                    color: '#ffffff'
+                                },
+                                ticks: { color: '#ffffff' }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                labels: { color: '#ffffff' }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Data Transfer Activity',
+                                color: '#ffffff',
+                                font: { size: 18 }
+                            }
+                        }
+                    }
+                });
+            } else {
+                dataTransferChart.data.labels = timestamps.slice(-10); // Show only the last 10 entries
+                dataTransferChart.data.datasets[0].data = packetCounts.slice(-10);
+                dataTransferChart.update();
+            }
+        }
+
+        function updateDashboard() {
+            const totalRevenue = dataStore.reduce((sum, item) => sum + item.Value, 0).toFixed(2);
+            const vatCollected = dataStore.reduce((sum, item) => sum + item.VATValue, 0).toFixed(2);
+            const numTransactions = dataStore.length;
+            const avgTransactionValue = (totalRevenue / numTransactions).toFixed(2);
+
+            document.getElementById('totalRevenue').textContent = `$${totalRevenue}`;
+            document.getElementById('vatCollected').textContent = `$${vatCollected}`;
+            document.getElementById('numTransactions').textContent = numTransactions;
+            document.getElementById('avgTransactionValue').textContent = `$${avgTransactionValue}`;
+
+            updateRevenueChart();
+            updateVatChart();
+            updateTransactionTypeChart();
+        }
+
+        function updateRevenueChart() {
+            const MAX_VISIBLE_POINTS = 20; // Maximum number of data points visible on the chart
+
+            // Map the data into dates and values
+            const dates = dataStore.map(item => new Date(item.TransactionDate * 86400000).toLocaleDateString());
+            const values = dataStore.map(item => item.Value);
+
+            // Limit the data to the most recent MAX_VISIBLE_POINTS
+            const visibleDates = dates.slice(-MAX_VISIBLE_POINTS);
+            const visibleValues = values.slice(-MAX_VISIBLE_POINTS);
+
+            if (!revenueChart) {
+                const ctx = document.getElementById('revenueChart').getContext('2d');
+                revenueChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: visibleDates, // Use the truncated labels
+                        datasets: [{
+                            label: 'Revenue Over Time',
+                            data: visibleValues, // Use the truncated data
+                            borderWidth: 1,
+                            borderColor: '#29b6f6'
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Date',
+                                    color: '#ffffff',
+                                    font: { size: 14 }
+                                },
+                                ticks: { color: '#ffffff' }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Revenue ($)',
+                                    color: '#ffffff',
+                                    font: { size: 14 }
+                                },
+                                ticks: { color: '#ffffff' }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: { color: '#ffffff' }
+                            }
+                        }
+                    }
+                });
+            } else {
+                // Update the chart with the most recent MAX_VISIBLE_POINTS
+                revenueChart.data.labels = visibleDates;
+                revenueChart.data.datasets[0].data = visibleValues;
+                revenueChart.update();
+            }
+        }
+
+
+        function updateVatChart() {
+            const branches = [...new Set(dataStore.map(item => item.Branch))];
+            const vatPerBranch = branches.map(branch =>
+                dataStore.filter(item => item.Branch === branch).reduce((sum, item) => sum + item.VATValue, 0)
+            );
+
+            const colors = generateColors(branches.length);
+
+            if (!vatChart) {
+                const ctx = document.getElementById('vatChart').getContext('2d');
+                vatChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: branches,
+                        datasets: [{
+                            label: 'VAT Contribution per Branch',
+                            data: vatPerBranch,
+                            backgroundColor: colors,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            legend: {
+                                display: false // Remove the legend
+                            },
+                            title: {
+                                display: true,
+                                text: 'VAT Contribution per Branch', // Add chart title
+                                color: '#ffffff', // White title text for dark background
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    }
+                });
+            } else {
+                vatChart.data.labels = branches;
+                vatChart.data.datasets[0].data = vatPerBranch;
+                vatChart.data.datasets[0].backgroundColor = colors;
+                vatChart.update();
+            }
+        }
+
+
+        function updateTransactionTypeChart() {
+            const types = [...new Set(dataStore.map(item => item.CustTransactionType))];
+            const typeCounts = types.map(type =>
+                dataStore.filter(item => item.CustTransactionType === type).length
+            );
+
+            const colors = generateColors(types.length);
+
+            if (!transactionTypeChart) {
+                const ctx = document.getElementById('transactionTypeChart').getContext('2d');
+                transactionTypeChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: types.map(type => `Type ${type}`),
+                        datasets: [{
+                            label: 'Transaction Type Distribution',
+                            data: typeCounts,
+                            backgroundColor: colors,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            legend: {
+                                display: false // Remove the legend
+                            },
+                            title: {
+                                display: true,
+                                text: 'Transaction Type Distribution', // Add chart title
+                                color: '#ffffff', // White title text for dark background
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    }
+                });
+            } else {
+                transactionTypeChart.data.labels = types.map(type => `Type ${type}`);
+                transactionTypeChart.data.datasets[0].data = typeCounts;
+                transactionTypeChart.data.datasets[0].backgroundColor = colors;
+                transactionTypeChart.update();
+            }
+        }
+
+
+        function updateCustomerInsights() {
+            const totalCustomers = new Set(dataStore.map(item => item.Customer)).size;
+            const repeatCustomers = Array.from(dataStore.reduce((map, item) => {
+                map.set(item.Customer, (map.get(item.Customer) || 0) + 1);
+                return map;
+            }, new Map())).filter(([_, count]) => count > 1).length;
+
+            const customerLifetimeValue = dataStore.reduce((map, item) => {
+                map.set(item.Customer, (map.get(item.Customer) || 0) + item.Value);
+                return map;
+            }, new Map());
+            const totalCLV = Array.from(customerLifetimeValue.values()).reduce((sum, value) => sum + value, 0).toFixed(2);
+
+            document.getElementById('totalCustomers').textContent = totalCustomers;
+            document.getElementById('repeatCustomers').textContent = repeatCustomers;
+            document.getElementById('customerLifetimeValue').textContent = `$${totalCLV}`;
+
+            updateCustomerActivityChart();
+            updateTopCustomersChart();
+            updateTransactionFrequencyChart();
+        }
+
+        function updateCustomerActivityChart() {
+            const customers = [...new Set(dataStore.map(item => item.Customer))];
+            const transactionsPerCustomer = customers.map(customer =>
+                dataStore.filter(item => item.Customer === customer).length
+            );
+
+            // Show only the last 4 customers and their transactions
+            const visibleCustomers = customers.slice(-8);
+            const visibleTransactions = transactionsPerCustomer.slice(-8);
+
+            if (!customerActivityChart) {
+                const ctx = document.getElementById('customerActivityChart').getContext('2d');
+                customerActivityChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: visibleCustomers,
+                        datasets: [{
+                            label: 'Transactions Per Customer',
+                            data: visibleTransactions,
+                            backgroundColor: 'rgba(41, 182, 246, 0.7)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Customers',
+                                    color: '#ffffff',
+                                    font: { size: 14 }
+                                },
+                                ticks: { color: '#ffffff' }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Number of Transactions',
+                                    color: '#ffffff',
+                                    font: { size: 14 }
+                                },
+                                ticks: { color: '#ffffff' }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: { color: '#ffffff' }
+                            }
+                        }
+                    }
+                });
+            } else {
+                customerActivityChart.data.labels = visibleCustomers;
+                customerActivityChart.data.datasets[0].data = visibleTransactions;
+                customerActivityChart.update();
+            }
+        }
+
+
+
+        function updateTopCustomersChart() {
+            const revenuePerCustomer = dataStore.reduce((map, item) => {
+                map.set(item.Customer, (map.get(item.Customer) || 0) + item.Value);
+                return map;
+            }, new Map());
+
+            const topCustomers = Array.from(revenuePerCustomer).sort((a, b) => b[1] - a[1]);
+
+            // Show only the last 4 top customers and their revenue
+            const visibleTopCustomers = topCustomers.slice(-8);
+
+            if (!topCustomersChart) {
+                const ctx = document.getElementById('topCustomersChart').getContext('2d');
+                topCustomersChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: visibleTopCustomers.map(([customer]) => customer),
+                        datasets: [{
+                            label: 'Revenue by Customer',
+                            data: visibleTopCustomers.map(([_, value]) => value),
+                            backgroundColor: 'rgba(255, 159, 64, 0.7)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Customers',
+                                    color: '#ffffff',
+                                    font: { size: 14 }
+                                },
+                                ticks: { color: '#ffffff' }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Revenue ($)',
+                                    color: '#ffffff',
+                                    font: { size: 14 }
+                                },
+                                ticks: { color: '#ffffff' }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: { color: '#ffffff' }
+                            }
+                        }
+                    }
+                });
+            } else {
+                topCustomersChart.data.labels = visibleTopCustomers.map(([customer]) => customer);
+                topCustomersChart.data.datasets[0].data = visibleTopCustomers.map(([_, value]) => value);
+                topCustomersChart.update();
+            }
+        }
+
+        function updateTransactionFrequencyChart() {
+            const transactionsPerCustomer = dataStore.reduce((map, item) => {
+                map.set(item.Customer, (map.get(item.Customer) || 0) + 1);
+                return map;
+            }, new Map());
+
+            const frequencyCounts = Array.from(transactionsPerCustomer.values()).reduce((counts, count) => {
+                counts[count] = (counts[count] || 0) + 1;
+                return counts;
+            }, {});
+
+            const frequencyKeys = Object.keys(frequencyCounts);
+            const frequencyValues = Object.values(frequencyCounts);
+
+            // Show only the last 4 transaction frequencies
+            const visibleFrequencyKeys = frequencyKeys.slice(-8);
+            const visibleFrequencyValues = frequencyValues.slice(-8);
+
+            if (!transactionFrequencyChart) {
+                const ctx = document.getElementById('transactionFrequencyChart').getContext('2d');
+                transactionFrequencyChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: visibleFrequencyKeys,
+                        datasets: [{
+                            label: 'Frequency of Transactions',
+                            data: visibleFrequencyValues,
+                            backgroundColor: 'rgba(153, 102, 255, 0.7)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Transaction Count',
+                                    color: '#ffffff',
+                                    font: { size: 14 }
+                                },
+                                ticks: { color: '#ffffff' }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Number of Customers',
+                                    color: '#ffffff',
+                                    font: { size: 14 }
+                                },
+                                ticks: { color: '#ffffff' }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                labels: { color: '#ffffff' }
+                            }
+                        }
+                    }
+                });
+            } else {
+                transactionFrequencyChart.data.labels = visibleFrequencyKeys;
+                transactionFrequencyChart.data.datasets[0].data = visibleFrequencyValues;
+                transactionFrequencyChart.update();
+            }
+        }
+
+        function updateTransactionInsights() {
+            const syncedTransactions = dataStore.filter(item => item.TransactionSynced === 1).length;
+            const multipleInvoices = dataStore.filter(item => item.MultipleInvoice === 1).length;
+            const avgVAT = (dataStore.reduce((sum, item) => sum + item.VATValue, 0) / dataStore.length).toFixed(2);
+
+            document.getElementById('syncedTransactions').textContent = `${syncedTransactions}`;
+            document.getElementById('multipleInvoices').textContent = `${multipleInvoices}`;
+            document.getElementById('avgVAT').textContent = `$${avgVAT}`;
+
+            updateSyncStatusChart(syncedTransactions, dataStore.length - syncedTransactions);
+            updateInvoiceVolumeChart();
+            updateInvoiceTypeChart(multipleInvoices, dataStore.length - multipleInvoices);
+        }
+
+        function updateSyncStatusChart(synced, unsynced) {
+            if (!syncStatusChart) {
+                const ctx = document.getElementById('syncStatusChart').getContext('2d');
+                syncStatusChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Synced', 'Unsynced'],
+                        datasets: [{
+                            data: [synced, unsynced],
+                            backgroundColor: ['#4CAF50', '#F44336']
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Synced vs. Unsynced Transactions'
+                            }
+                        }
+                    }
+                });
+            } else {
+                syncStatusChart.data.datasets[0].data = [synced, unsynced];
+                syncStatusChart.update();
+            }
+        }
+
+        function updateInvoiceVolumeChart() {
+            const transactionDates = dataStore.map(item => new Date(item.TransactionDate * 1000).toLocaleDateString());
+            const invoiceCounts = dataStore.map(item => item.InvoiceImagePath ? 1 : 0);
+
+            if (!invoiceVolumeChart) {
+                const ctx = document.getElementById('invoiceVolumeChart').getContext('2d');
+                invoiceVolumeChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: transactionDates,
+                        datasets: [{
+                            label: 'Invoice Volume',
+                            data: invoiceCounts,
+                            borderColor: '#29b6f6',
+                            backgroundColor: 'rgba(41, 182, 246, 0.2)'
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Date'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Number of Invoices'
+                                }
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Invoice Volume Over Time'
+                            }
+                        }
+                    }
+                });
+            } else {
+                invoiceVolumeChart.data.labels = transactionDates;
+                invoiceVolumeChart.data.datasets[0].data = invoiceCounts;
+                invoiceVolumeChart.update();
+            }
+        }
+
+        function updateInvoiceTypeChart(multiple, single) {
+            if (!invoiceTypeChart) {
+                const ctx = document.getElementById('invoiceTypeChart').getContext('2d');
+                invoiceTypeChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Multiple Invoices', 'Single Invoice'],
+                        datasets: [{
+                            label: ['Multiple Invoices'],
+                            data: [multiple, single],
+                            backgroundColor: ['#FF9800', '#3F51B5']
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'Number of Transactions'
+                                }
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Single vs. Multiple Invoice Transactions'
+                            }
+                        }
+                    }
+                });
+            } else {
+                invoiceTypeChart.data.datasets[0].data = [multiple, single];
+                invoiceTypeChart.update();
+            }
+        }
+
+        function updateOperationalAnalytics() {
+            const uniqueOrderNumbers = new Set(dataStore.map(item => item.OrderNumber)).size;
+            const consolidatedTransactions = dataStore.filter(item => item.Consolidated === 1).length;
+            const nonConsolidatedTransactions = dataStore.length - consolidatedTransactions;
+
+            document.getElementById('uniqueOrderNumbers').textContent = uniqueOrderNumbers;
+            document.getElementById('consolidatedTransactions').textContent = consolidatedTransactions;
+            document.getElementById('nonConsolidatedTransactions').textContent = nonConsolidatedTransactions;
+
+            updateRadialChart(consolidatedTransactions, nonConsolidatedTransactions);
+            updateStreamGraph();
+        }
+
+
+        function updateRadialChart(consolidated, nonConsolidated) {
+            if (!radialChart) {
+                const ctx = document.getElementById('radialChart').getContext('2d');
+                radialChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Consolidated', 'Non-Consolidated'],
+                        datasets: [{
+                            data: [consolidated, nonConsolidated],
+                            backgroundColor: ['#4CAF50', '#F44336']
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Consolidated vs Non-Consolidated Transactions'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        return `${context.label}: ${context.raw}`;
+                                    }
+                                }
+                            }
+                        },
+                        responsive: true
+                    }
+                });
+            } else {
+                radialChart.data.datasets[0].data = [consolidated, nonConsolidated];
+                radialChart.update();
+            }
+        }
+
+        let streamGraphChart; // Declare a global variable to hold the chart instance
+
+        function updateStreamGraph() {
+            // Helper function to format branch names
+            function formatBranchName(branch) {
+                if (!branch) return 'Unknown'; // Default for missing branch information
+                return branch
+                    .replace(/_/g, ' ') // Replace underscores with spaces
+                    .replace(/\b\w/g, char => char.toUpperCase()); // Capitalize each word
+            }
+
+            // Group data by Branch
+            const groupedData = dataStore.reduce((acc, item) => {
+                const branch = formatBranchName(item.Branch); // Apply formatting here
+                if (!acc[branch]) {
+                    acc[branch] = { consolidated: 0, nonConsolidated: 0 };
+                }
+                if (item.Consolidated === 1) {
+                    acc[branch].consolidated += 1;
+                } else {
+                    acc[branch].nonConsolidated += 1;
+                }
+                return acc;
+            }, {});
+
+            // Ensure we have all branches included, even those with zero transactions
+            const allBranches = Object.keys(groupedData);
+            const consolidatedData = allBranches.map(branch => groupedData[branch].consolidated);
+            const nonConsolidatedData = allBranches.map(branch => groupedData[branch].nonConsolidated);
+
+            // Debugging outputs
+            console.log('Grouped Data:', groupedData);
+            console.log('All Branches:', allBranches);
+
+            const ctx = document.getElementById('streamGraph').getContext('2d');
+
+            // Destroy the previous chart instance if it exists
+            if (streamGraphChart) {
+                streamGraphChart.destroy();
+            }
+
+            // Create the new chart instance
+            streamGraphChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: allBranches, // Use all formatted branch names
+                    datasets: [
+                        {
+                            label: 'Consolidated Transactions',
+                            data: consolidatedData,
+                            backgroundColor: 'rgba(41, 182, 246, 0.5)',
+                            borderColor: '#29b6f6',
+                            borderWidth: 1,
+                        },
+                        {
+                            label: 'Non-Consolidated Transactions',
+                            data: nonConsolidatedData,
+                            backgroundColor: 'rgba(244, 67, 54, 0.5)',
+                            borderColor: '#F44336',
+                            borderWidth: 1,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Streamgraph: Consolidated vs Non-Consolidated Transactions by Branch',
+                        },
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Branch',
+                            },
+                        },
+                        y: {
+                            stacked: true, // Enable stacking for a clear comparison
+                            title: {
+                                display: true,
+                                text: 'Transaction Count',
+                            },
+                        },
+                    },
+                },
+            });
+        }
+
+
+        function generateColors(count) {
+            const colors = [];
+            for (let i = 0; i < count; i++) {
+                const hue = (i * 360) / count;
+                colors.push(`hsl(${hue}, 70%, 60%)`);
+            }
+            return colors;
+        }
+    </script>
+</body>
+
+</html>

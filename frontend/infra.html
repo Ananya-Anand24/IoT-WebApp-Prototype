@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infra Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <div class="dashboard-container">
+    <!-- Navigation Buttons -->
+    <div class="navigation-buttons">
+      <a href="edge.html" class="nav-button">Edge</a>
+      <a href="app.html" class="nav-button">Cloud</a>
+    </div>
+
+    <!-- Header -->
+    <header class="dashboard-header">
+      <h1>Infra Dashboard</h1>
+      <p>The Infra layer facilitates data flow by receiving data from the Edge layer and forwarding it to the Cloud
+        layer without processing.</p>
+    </header>
+
+    <!-- Row: Overview and Real-Time Data Flow -->
+    <div class="dashboard-row">
+      <!-- Overview Section -->
+      <section class="overview">
+        <h2>Overview</h2>
+        <div class="single-metric-vertical"></br>
+          <h2>Total Data Received</h2>
+          <p id="dataReceived">0 rows</p></br>
+          <h2>Total Data Forwarded</h2>
+          <p id="dataForwarded">0 rows</p></br>
+          <h2>Data Transfer Speed</h2>
+          <p id="transferSpeed">0 rows/s</p></br>
+          <h2>Errors</h2>
+          <p id="errorCount">0</p>
+        </div>
+      </section>
+
+      <!-- Real-Time Data Flow Visualization -->
+      <section class="data-flow">
+        <h2>Real-Time Data Flow Visualization</h2>
+        <div class="chart-container">
+          <canvas id="rowsReceivedChart"></canvas>
+        </div>
+        <div class="chart-container">
+          <canvas id="rowsForwardedChart"></canvas>
+        </div>
+      </section>
+    </div>
+
+    <!-- Logs Section -->
+    <section class="logs">
+      <h2>Logs and Status Updates</h2>
+      <div class="status-indicator">
+        <p>Status: <span id="infraStatus" class="active">Active</span>
+          <span class="status-dot status-active-dot"></span>
+        </p>
+      </div>
+      <div class="log-panel">
+        <ul id="logList"></ul>
+      </div>
+    </section>
+
+    <!-- Code Execution Logic -->
+    <section class="logic">
+      <h2>Code Execution Logic</h2>
+      <div class="flowchart-container">
+        <div class="flowchart-step">
+          <div class="step-circle">1</div>
+          <p>Receive data from the Edge layer via API.</p>
+        </div>
+        <div class="flowchart-arrow">→</div>
+        <div class="flowchart-step">
+          <div class="step-circle">2</div>
+          <p>Forward data to the Cloud layer via API.</p>
+        </div>
+        <div class="flowchart-arrow">→</div>
+        <div class="flowchart-step">
+          <div class="step-circle">3</div>
+          <p>Log the status of each operation.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Data Preview Section -->
+    <section class="data-preview">
+      <h2>Data Preview</h2>
+      <p>Preview of the most recent rows received from the Edge layer:</p>
+      <div class="table-container">
+        <table id="dataPreviewTable">
+          <thead>
+            <tr>
+              <th>Row ID</th>
+              <th>Original Value</th>
+              <th>Timestamp</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Rows will be dynamically added here -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <script>
+      const apiEndpoint = 'http://localhost:5002/api/infra/data';
+      let receivedRows = 0;
+      let forwardedRows = 0;
+      let errorCount = 0;
+      let rowCounter = 1;
+      const processedData = [];
+
+      const maxTableRows = 5;
+      const maxLogEntries = 10;
+
+      const dataPreviewTable = document.querySelector("#dataPreviewTable tbody");
+      const logList = document.getElementById("logList");
+      const dataReceivedEl = document.getElementById("dataReceived");
+      const dataForwardedEl = document.getElementById("dataForwarded");
+      const transferSpeedEl = document.getElementById("transferSpeed");
+      const errorCountEl = document.getElementById("errorCount");
+
+      const rowsReceivedCtx = document.getElementById("rowsReceivedChart").getContext("2d");
+      const rowsForwardedCtx = document.getElementById("rowsForwardedChart").getContext("2d");
+
+      const rowsReceivedChart = new Chart(rowsReceivedCtx, {
+        type: "line",
+        data: {
+          labels: [],
+          datasets: [{
+            label: "Rows Received",
+            data: [],
+            borderColor: "#29b6f6",
+            backgroundColor: "rgba(41, 182, 246, 0.2)",
+            fill: true,
+          }],
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              display: true,
+            },
+          },
+          scales: {
+            x: {
+              title: { display: true, text: "Time" }, ticks: {
+                maxRotation: 0, // Prevent label rotation for better readability
+              },
+            },
+            y: { title: { display: true, text: "Rows Processed" } },
+          },
+        },
+      });
+
+      const rowsForwardedChart = new Chart(rowsForwardedCtx, {
+        type: "bar",
+        data: {
+          labels: [],
+          datasets: [{
+            label: "Rows Forwarded",
+            data: [],
+            backgroundColor: "#8a94b7",
+          }],
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              display: true,
+            },
+          },
+          scales: {
+            x: {
+              title: { display: true, text: "Time" }, ticks: {
+                maxRotation: 0, // Prevent label rotation for better readability
+              },
+            },
+            y: { title: { display: true, text: "Rows Processed" } },
+          },
+        },
+      });
+
+      let oidToRowIdMap = {}; // Map to store Oid to numerical rowId mapping
+      let nextRowId = 1; // Counter to generate unique numerical rowIds
+      const uniqueRowIds = new Set(); // Set to track unique row IDs
+
+      async function fetchDataFromAPI() {
+        try {
+          const response = await fetch(apiEndpoint);
+          const apiData = await response.json();
+
+          apiData.forEach((item) => {
+            // Ensure consistent rowId mapping
+            if (!oidToRowIdMap[item.Oid]) {
+              oidToRowIdMap[item.Oid] = nextRowId; // Map Oid to numerical rowId
+              nextRowId++;
+            }
+
+            const rowId = oidToRowIdMap[item.Oid];
+            uniqueRowIds.add(rowId); // Add rowId to the unique set
+
+            processedData.push({
+              rowId: rowId, // Use the mapped rowId
+              value: item.Value || 0,
+              timestamp: new Date().toLocaleTimeString(),
+            });
+          });
+        } catch (error) {
+          console.error("Error fetching data from API:", error);
+          addLog(`[ERROR] Failed to fetch data: ${error.message}`);
+        }
+      }
+
+
+      /**
+      * Function to determine the log type based on the message content.
+      * @param {string} message - The log message.
+      * @returns {string} - The log type: INFO, SUCCESS, ERROR, or default INFO.
+      */
+      function getLogType(message) {
+        if (message.includes("[SUCCESS]")) {
+          return "SUCCESS";
+        } else if (message.includes("[ERROR]")) {
+          return "ERROR";
+        } else if (message.includes("[WARNING]")) {
+          return "WARNING";
+        } else {
+          return "INFO"; // Default to INFO
+        }
+      }
+      /**
+           * Function to add a log dynamically.
+           * @param {string} message - The log message to display.
+           */
+      function addLog(message) {
+        if (!isActive) return; // Prevent logging if the system is inactive
+        const type = getLogType(message); // Determine the type dynamically
+        const logItem = document.createElement("li");
+        logItem.className = "log-entry"; // Apply consistent styling
+        logItem.setAttribute("data-type", type); // Dynamically set the log type
+        logItem.textContent = message; // Add the log message
+
+        // Add the log entry at the top of the list
+        logList.prepend(logItem);
+
+        // Limit the log list to the maximum number of entries
+        if (logList.childElementCount > maxLogEntries) {
+          logList.removeChild(logList.lastChild); // Remove the oldest log
+        }
+      }
+
+
+      function addRowToTable(row) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${row.rowId}</td><td>${row.value}</td><td>${row.timestamp}</td>`;
+        dataPreviewTable.prepend(tr);
+
+        if (dataPreviewTable.childElementCount > maxTableRows) {
+          dataPreviewTable.removeChild(dataPreviewTable.lastChild);
+        }
+      }
+
+      function updateMetrics() {
+        const distinctRowsCount = uniqueRowIds.size; // Calculate unique rows
+        dataReceivedEl.textContent = `${distinctRowsCount} rows`; // Update received data metric
+        dataForwardedEl.textContent = `${distinctRowsCount - errorCount} rows`;
+        transferSpeedEl.textContent = `${(distinctRowsCount / 5).toFixed(2)} rows/s`;
+        errorCountEl.textContent = errorCount;
+      }
+
+
+      function updateCharts() {
+        const timestamp = new Date().toLocaleTimeString();
+        rowsReceivedChart.data.labels.push(timestamp);
+        rowsReceivedChart.data.datasets[0].data.push(receivedRows);
+
+        rowsForwardedChart.data.labels.push(timestamp);
+        rowsForwardedChart.data.datasets[0].data.push(forwardedRows);
+
+        if (rowsReceivedChart.data.labels.length > maxTableRows) {
+          rowsReceivedChart.data.labels.shift();
+          rowsReceivedChart.data.datasets[0].data.shift();
+        }
+
+        if (rowsForwardedChart.data.labels.length > maxTableRows) {
+          rowsForwardedChart.data.labels.shift();
+          rowsForwardedChart.data.datasets[0].data.shift();
+        }
+
+        rowsReceivedChart.update();
+        rowsForwardedChart.update();
+      }
+
+      let lastActivityTimestamp = Date.now(); // Track the last activity timestamp
+      let statusInactiveTimeout = 10000; // 10 seconds threshold for inactivity
+      let isActive = true; // Track system activity state
+
+      function updateStatus() {
+        const currentTime = Date.now();
+        const statusElement = document.getElementById("infraStatus");
+        const statusDot = document.querySelector(".status-dot");
+
+        if (currentTime - lastActivityTimestamp > statusInactiveTimeout && receivedRows >= processedData.length) {
+          // Switch to Inactive if timeout is exceeded and no more rows to process
+          statusElement.textContent = "Inactive";
+          statusElement.className = "inactive";
+          statusDot.className = "status-dot status-inactive-dot";
+          isActive = false; // Set system to inactive
+        } else {
+          // Switch to Active if there is activity or data to process
+          statusElement.textContent = "Active";
+          statusElement.className = "active";
+          statusDot.className = "status-dot status-active-dot";
+          isActive = true; // Set system to active
+        }
+      }
+
+      function simulateDataFlow() {
+        if (receivedRows < processedData.length) {
+          const currentRow = processedData[receivedRows];
+          receivedRows++;
+
+          // Update last activity timestamp when data is received
+          lastActivityTimestamp = Date.now();
+
+          addLog(`[INFO] Row received: ${currentRow.rowId}`);
+          addRowToTable(currentRow);
+
+          setTimeout(() => {
+            if (Math.random() < 0.9) {
+              forwardedRows++;
+              addLog(`[SUCCESS] Row forwarded: ${currentRow.rowId}`);
+            } else {
+              errorCount++;
+              addLog(`[ERROR] Failed to forward: ${currentRow.rowId}`);
+            }
+
+            updateMetrics();
+            updateCharts();
+          }, 1000);
+        } else {
+          addLog("[INFO] No more data to process.");
+        }
+      }
+
+      // Set intervals for API fetching, data flow simulation, and status updates
+      setInterval(fetchDataFromAPI, 4500);
+      setInterval(simulateDataFlow, 4500);
+      setInterval(updateStatus, 1000);
+
+    </script>
+</body>
+
+</html>

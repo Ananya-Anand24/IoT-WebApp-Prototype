@@ -1,0 +1,955 @@
+/* General body styling */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #10142c;
+    color: #ffffff;
+}
+
+.dashboard-container {
+    padding-top: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.dashboard-header h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+/* Tabs Navigation Bar */
+.tabs {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: #000000;
+    padding: 10px 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+/* Logo Section */
+.tab-logo {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ffffff;
+    text-transform: uppercase;
+    margin-right: 20px;
+    letter-spacing: 1px;
+}
+
+/* Tab Buttons */
+.tab-button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #d5daeb;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+    text-transform: capitalize;
+}
+
+.tab-button:hover {
+    color: #ffffff;
+    border-bottom: 2px solid #29b6f6;
+}
+
+.tab-button.active {
+    color: #ffffff;
+    border-bottom: 2px solid #29b6f6;
+}
+
+/* Additional Styling for Tab Bar */
+.tabs {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    border-radius: 0px;
+}
+
+.tab-button.active:after,
+.tab-button:hover:after {
+    font-size: 0.9rem;
+    margin-left: 5px;
+    color: #ff5252;
+}
+
+
+/* Tabs Content */
+.tabs-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.tab-content {
+    display: none;
+    padding: 20px;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Layout adjustments for financial overview (reuse previous layout styles) */
+.layout {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+/* Metrics container */
+.metrics {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* Two columns with equal width */
+    gap: 20px;
+    /* Space between each metric */
+    /*flex: 1;  Allow metrics to take flexible space */
+}
+
+/* Individual metric styling */
+.metric {
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #29b6f6;
+    /* Vibrant light blue for values */
+    background-color: #151a40;
+    /* Slightly lighter dark background */
+    padding: 20px;
+    border-radius: 8px;
+    /* Smooth rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    /* Subtle shadow for depth */
+    transition: transform 0.2s ease-in-out;
+    /* Smooth scaling on hover */
+    height: 100px;
+    /* Fixed height for metric cards */
+    width: 200px;
+}
+
+.metric:hover {
+    transform: scale(1.05);
+    /* Slight scaling effect on hover */
+}
+
+.metric h2 {
+    font-size: 1.2rem;
+    /* Smaller size for headings */
+    font-weight: bold;
+    color: #d5daeb;
+    /* Muted color for subheadings */
+    text-transform: capitalize;
+    /* Uppercase style for headings */
+    letter-spacing: 0.8px;
+    /* Subtle letter spacing */
+}
+
+.metric p {
+    font-size: 1.2rem;
+    /* Larger size for metric values */
+    font-weight: bold;
+    color: #ffffff;
+    /* White for metric values */
+}
+
+/* Pie Charts container */
+.charts {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* Two columns with equal width */
+    gap: 20px;
+    /*Space between charts */
+    /*flex: 1;  /*Flexible space for charts */
+    width: 300px;
+    height: 300px;
+}
+
+/* Specific chart sizes */
+#vatChart,
+#transactionTypeChart {
+    width: 100%;
+    /* Match width to available space */
+    height: 150px;
+    /* Reduced height to better align with metric cards */
+    background-color: #151a40;
+    /* Background similar to surrounding cards */
+    border-radius: 8px;
+    /* Smooth rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    /* Consistent shadowing */
+}
+
+/* Line chart placement */
+.line-chart-container {
+    margin-top: 20px;
+    /* Space above the line chart */
+    text-align: center;
+    /* Center the line chart in the layout */
+}
+
+#revenueChart {
+    width: 100%;
+    /* Full width for the line chart */
+    max-width: 1200px;
+    /* Limit width for large screens */
+    height: 100px;
+    /* Appropriate height for a detailed line chart */
+    background-color: #151a40;
+    /* Background similar to surrounding cards */
+    border-radius: 8px;
+    /* Smooth rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    /* Consistent shadowing */
+}
+
+/* Home Tab Layout */
+#home .layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+    /* Space between sections */
+    margin-top: 20px;
+    width: 100%;
+}
+
+/* Metrics Section */
+#home .metrics {
+    display: flex;
+    justify-content: space-between;
+    /* Space out metrics evenly */
+    gap: 20px;
+    /* Space between individual metrics */
+    width: 100%;
+    /* Full width of the container */
+    max-width: 1200px;
+    /* Limit max width for large screens */
+}
+
+/* Individual Metric Styling */
+#home .metric {
+    background-color: #151a40;
+    color: #ffffff;
+    text-align: center;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    flex: 1;
+    /* Allow metrics to resize evenly */
+    min-width: 200px;
+    /* Ensure metrics don’t shrink too much */
+    max-width: 300px;
+    /* Limit max width for metrics */
+    transition: transform 0.2s ease-in-out;
+}
+
+#home .metric:hover {
+    transform: scale(1.05);
+    /* Slight zoom effect on hover */
+}
+
+#home .metric h2 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #d0e5ef;
+    /* Accent color for headings */
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    /* Subtle spacing for better readability */
+}
+
+#home .metric p {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #ffffff;
+    /* Bright white for metric values */
+    margin: 0;
+}
+
+/* Data Transfer Chart */
+#home #dataTransferChart {
+    width: 100%;
+    max-width: 1200px;
+    /* Limit width for large screens */
+    height: 300px;
+    background-color: #151a40;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    /* Space around the chart for a cleaner look */
+}
+
+/* Layout for Customer Insights Tab */
+#customer-insights .layout {
+    display: flex;
+    flex-direction: column;
+    /* Stack rows of content */
+    gap: 40px;
+    /* Space between rows */
+    align-items: center;
+    margin-top: 20px;
+    padding: 20px;
+    width: 100%;
+    /* Full width */
+}
+
+/* First Row: Metrics Card and Customer Activity Chart */
+#customer-insights .first-row {
+    display: flex;
+    /* Side-by-side alignment */
+    justify-content: space-between;
+    /* Space between card and chart */
+    align-items: center;
+    /* Align vertically */
+    gap: 20px;
+    /* Space between elements */
+    width: 100%;
+    /* Full width */
+}
+
+/* Metrics Card */
+#customer-insights .metrics {
+    background-color: #151a40;
+    color: #ffffff;
+    text-align: center;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    width: 400px;
+    /* Fixed width */
+    height: 300px;
+    /* Match height with chart */
+    display: flex;
+    flex-direction: column;
+    /* Stack metrics vertically */
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 2px;
+    /* Space between individual metrics */
+}
+
+/* Individual Metric Styling */
+#customer-insights .metrics h2 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #deeef5;
+    /* Accent color for metric titles */
+    margin-bottom: 2px;
+}
+
+#customer-insights .metrics p {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ffffff;
+    /* Metric values */
+}
+
+/* Customer Activity Chart */
+#customer-insights #customerActivityChart {
+    background-color: #151a40;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    width: calc(100% - 440px);
+    /* Remaining width after metrics card */
+    height: 300px;
+    /* Match height with metrics card */
+}
+
+/* Second Row: Stacked Charts */
+#customer-insights .charts {
+    display: flex;
+    flex-direction: column;
+    /* Stack charts vertically */
+    gap: 20px;
+    /* Space between charts */
+    width: 100%;
+    /* Full width */
+    align-items: center;
+    /* Center align charts */
+    padding: 20px;
+}
+
+/* Individual Charts in Second Row */
+#customer-insights #topCustomersChart,
+#customer-insights #transactionFrequencyChart {
+    background-color: #151a40;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    /* Full width of container */
+    max-width: 1000px;
+    /* Limit width on larger screens */
+    height: 300px;
+    /* Consistent height */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+
+    /* Stack metrics vertically on smaller screens */
+    #home .metrics {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #home .metric {
+        width: 100%;
+        /* Full width for smaller screens */
+        max-width: none;
+        /* Remove max-width limitation */
+    }
+
+    #home #dataTransferChart {
+        height: 250px;
+        /* Reduce chart height on smaller screens */
+    }
+
+    /* Adjust first row to stack vertically */
+    #customer-insights .first-row {
+        flex-direction: column;
+        /* Stack card and chart */
+        gap: 20px;
+    }
+
+    /* Adjust Metrics Card and Customer Activity Chart */
+    #customer-insights .metrics {
+        width: 100%;
+        /* Full width */
+        height: auto;
+        /* Adjust height dynamically */
+    }
+
+    #customer-insights #customerActivityChart {
+        width: 100%;
+        /* Full width */
+        height: auto;
+        /* Adjust height dynamically */
+    }
+
+    /* Second Row Charts */
+    #customer-insights #topCustomersChart,
+    #customer-insights #transactionFrequencyChart {
+        width: 100%;
+        /* Full width */
+        max-width: none;
+        /* No width limit on smaller screens */
+    }
+}
+
+/* Vertical Metric Container */
+.single-metric-vertical {
+    width: 300px;
+    /* Full width of the container */
+    background-color: #151a40;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    text-align: left;
+    /* Align content to the left */
+    height: 620px;
+}
+
+.metric-detail h2 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #d8def4;
+    text-transform: initial;
+}
+
+.metric-detail p {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ffffff;
+    padding-bottom: 10px;
+}
+
+/* Dashboard Row: Flex Container */
+.dashboard-row {
+    display: flex;
+    /* Make sections align horizontally */
+    flex-direction: row;
+    /* Ensure layout is horizontal */
+    gap: 20px;
+    /* Add space between the sections */
+    align-items: flex-start;
+    /* Align items to the top of the row */
+    margin: 20px 0;
+}
+
+/* Overview Section */
+.overview {
+    flex: 1;
+    /* Ensure it takes less space compared to the charts */
+    max-width: 400px;
+}
+
+/* Real-Time Charts Section */
+.real-time-charts {
+    flex-direction: column;
+    /* Stack charts vertically within this section */
+    gap: 10px;
+    /* Space between the charts */
+    width: 100%;
+    /* Ensure the section takes up full space */
+}
+
+/* Chart Styling */
+.real-time-charts .chart-container {
+    background-color: #151a40;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    height: 300px;
+
+}
+
+.real-time-charts canvas {
+    width: 100%;
+    /* Full width */
+    height: 100px;
+    /* Larger height for better visibility */
+}
+
+/* Simulation Status Label */
+.simulation-status {
+    margin-left: -10px;
+    /* Adjust this value to move the button further left */
+    font-size: 0.8rem;
+    /* Small label size */
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    /* Space between text and dot */
+    color: #ffffff;
+}
+
+.simulation-status .status-active {
+    color: #94d8f7;
+    /* Light blue for active */
+}
+
+.simulation-status .status-inactive {
+    color: #ff5252;
+    /* Red for inactive */
+}
+
+/* Glowing Status Dot */
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.2);
+    display: inline-block;
+}
+
+.status-active-dot {
+    background-color: #00ff00;
+    /* Green for active */
+    box-shadow: 0 0 10px 2px rgba(0, 255, 0, 0.5);
+    /* Green glow */
+}
+
+.status-inactive-dot {
+    background-color: #ff0000;
+    /* Red for inactive */
+    box-shadow: 0 0 10px 2px rgba(255, 0, 0, 0.5);
+    /* Red glow */
+}
+
+/* Flowchart Container */
+.flowchart-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Individual Step in Flowchart */
+.flowchart-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 150px;
+    padding: 10px;
+}
+
+.step-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #29b6f6;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    font-size: 1.2rem;
+}
+
+/* Arrows Between Steps */
+.flowchart-arrow {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .flowchart-container {
+        flex-direction: column;
+    }
+
+    .flowchart-arrow {
+        transform: rotate(90deg);
+        /* Rotate arrows for vertical alignment */
+    }
+}
+
+
+/* Dataset Overview Table */
+.table-container {
+    margin: 20px auto;
+    width: 100%;
+    max-width: 600px;
+    background-color: #151a40;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    overflow-x: auto;
+}
+
+.table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #ffffff;
+}
+
+.table-container th,
+.table-container td {
+    border: 1px solid #8a94b7;
+    text-align: center;
+    padding: 8px;
+}
+
+.table-container th {
+    background-color: #29b6f6;
+    color: #10142c;
+    font-weight: bold;
+}
+
+/* Chart Container */
+.chart-container {
+    margin: 20px auto;
+    width: 100%;
+    max-width: 800px;
+    background-color: #151a40;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.chart-container canvas {
+    width: 100%;
+    height: 270px;
+}
+
+/* Real-Time Data Flow Visualization Styling */
+.data-flow {
+    margin-bottom: 20px;
+}
+
+.data-flow h2 {
+    font-size: 1.5rem;
+    color: #ffffff;
+    margin-bottom: 15px;
+}
+
+/* Logs Section Styling */
+.logs h2 {
+    font-size: 1.5rem;
+    color: #ffffff;
+    margin-bottom: 15px;
+}
+
+.status-indicator .idle {
+    color: #ff5252;
+    font-weight: bold;
+}
+
+/* Log Panel Container */
+/* Log Panel Container */
+.log-panel {
+    background-color: #151a40;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    max-height: 300px;
+    overflow-y: auto;
+    /* Enable vertical scrolling */
+    border-left: 4px solid #29b6f6;
+    /* Highlight the panel */
+}
+
+/* Log Entry List */
+.log-panel ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Log Entries */
+.log-entry {
+    font-size: 0.9rem;
+    padding: 8px 10px;
+    border-bottom: 1px solid #8a94b7;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Alternating Row Colors */
+.log-entry:nth-child(odd) {
+    background-color: #1a233a;
+}
+
+.log-entry:nth-child(even) {
+    background-color: #151a40;
+}
+
+/* Severity Badge Styling */
+.log-entry::before {
+    content: attr(data-type);
+    /* Dynamically show type (INFO, SUCCESS, ERROR) */
+    font-size: 0.75rem;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin-right: 10px;
+    color: #ffffff;
+    display: inline-block;
+}
+
+/* Specific Log Types */
+[data-type="INFO"]::before {
+    background-color: #29b6f6;
+    /* Blue for INFO */
+}
+
+[data-type="SUCCESS"]::before {
+    background-color: #00c853;
+    /* Green for SUCCESS */
+}
+
+[data-type="ERROR"]::before {
+    background-color: #ff5252;
+    /* Red for ERROR */
+}
+
+
+/* Data Preview Table Styling */
+.data-preview h2 {
+    font-size: 1.5rem;
+    color: #ffffff;
+    margin-bottom: 15px;
+}
+
+/* Map Container */
+.map-container {
+    text-align: center;
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #151a40;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    color: #ffffff;
+}
+
+/* Transaction Insights Specific Styling */
+#transaction-insights .metrics {
+    flex-direction: column;
+    width: 500px;
+    height: 370px;
+    background-color: #151a40;
+    padding: 20px;
+    margin-left: 20px;
+}
+
+#transaction-insights .metrics h2 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #d0e5ef;
+    padding: 10px;
+}
+
+#transaction-insights .metrics p {
+    color: #d0e5ef;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 10px;
+
+}
+
+#transaction-insights .metric:hover {
+    transform: scale(1.05);
+}
+
+#transaction-insights .first-row {
+    display: flex;
+    /* Side-by-side alignment */
+    align-items: center;
+    /* Align vertically */
+    gap: 40px;
+    /* Space between elements */
+    width: 100%;
+    /* Full width */
+}
+
+#transaction-insights .pie-chart {
+    width: 450px;
+    align-items: center;
+    padding: 20px;
+}
+
+
+#transaction-insights .charts {
+    width: 570px;
+    align-items: center;
+}
+
+#transaction-insights canvas {
+    width: 100%;
+    max-width: 900px;
+    background-color: #151a40;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    margin: 20px;
+    padding: 20px;
+}
+
+#operational-analytics .layout {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-top: 20px;
+    padding: 20px;
+    align-items: center;
+}
+
+#operational-analytics .metrics {
+    flex-direction: column;
+    width: 500px;
+    height: 400px;
+    background-color: #151a40;
+    padding: 20px;
+    margin-left: 20px;
+}
+
+#operational-analytics .metrics h2 {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #d0e5ef;
+    padding: 10px;
+}
+
+#operational-analytics .metrics p {
+    color: #d0e5ef;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: 10px;
+
+}
+
+#operational-analytics .first-row {
+    display: flex;
+    /* Side-by-side alignment */
+    align-items: center;
+    /* Align vertically */
+    gap: 40px;
+    /* Space between elements */
+    width: 100%;
+    /* Full width */
+}
+
+#operational-analytics .chart-container {
+    width: 400px;
+    background-color: #151a40;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    padding: 20px;
+}
+
+#operational-analytics .graph-container {
+    display: flex;
+    width: 100%;
+    max-width: 1000px;
+    background-color: #151a40;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Tag Navigation Buttons */
+.navigation-buttons {
+    position: absolute;
+    top: 20px;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+}
+
+.nav-button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 15px;
+    width: 120px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #ffffff;
+    background: linear-gradient(145deg, #1c223a, #28304a);
+    border: none;
+    text-decoration: none;
+    text-align: center;
+    border-radius: 0 6px 6px 0;
+    /* Rounded corners on the right */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 -2px 4px rgba(255, 255, 255, 0.05) inset;
+    transition: transform 0.2s ease, background 0.3s ease, box-shadow 0.3s ease;
+    clip-path: polygon(100% 0, 95% 50%, 100% 100%, 0 100%, 0 0);
+    /* Pointy shape on the right */
+}
+
+.nav-button:hover {
+    background: linear-gradient(145deg, #29b6f6, #2384c9);
+    box-shadow: 0 6px 12px rgba(41, 182, 246, 0.4), 0 -2px 6px rgba(41, 182, 246, 0.2) inset;
+    transform: translateX(-5px);
+}
+
+.nav-button:active {
+    transform: translateX(-3px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2), 0 -1px 3px rgba(255, 255, 255, 0.1) inset;
+}
+
+.nav-button.active {
+    background: linear-gradient(145deg, #29b6f6, #1e90e8);
+    color: #ffffff;
+    box-shadow: 0 6px 12px rgba(41, 182, 246, 0.5), 0 -2px 6px rgba(255, 255, 255, 0.15) inset;
+    cursor: default;
+}

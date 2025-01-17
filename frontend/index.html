@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Data Flow Visualization Hub</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h1>Data Flow Visualization Hub</h1>
+  <p>Select a layer to view and observe the data flow through each stage.</p>
+  
+  <div class="layer-navigation">
+    <button onclick="navigateToLayer('edge.html')">View Edge Layer</button>
+    <button onclick="navigateToLayer('infra.html')">View Infrastructure Layer</button>
+    <button onclick="navigateToLayer('app.html')">View Application Layer</button>
+  </div>
+
+  <script>
+    function navigateToLayer(layerPage) {
+      window.location.href = layerPage;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edge Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <div class="dashboard-container">
+    <!-- Navigation Buttons -->
+    <div class="navigation-buttons">
+      <a href="infra.html" class="nav-button">Infra</a>
+      <a href="app.html" class="nav-button">Cloud</a>
+    </div>
+
+    <!-- Header -->
+    <header class="dashboard-header">
+      <h1>Edge Dashboard</h1>
+      <p>The Edge layer processes data row by row from the dataset and sends it to the Infra layer.</p>
+    </header>
+
+    <div class="dashboard-row">
+      <!-- Overview Section -->
+      <section class="overview">
+        <h2>Overview</h2>
+        <div class="single-metric-vertical"><br />
+          <h2>Total Rows Processed</h2>
+          <p id="totalRowsProcessed">0</p><br />
+          <h2>Data Sent</h2>
+          <p id="dataSent">0 rows</p><br />
+          <h2>Remaining Rows</h2>
+          <p id="remainingRows">Loading...</p><br />
+          <h2>Simulation Speed</h2>
+          <p id="simulationSpeed">5s/row</p>
+        </div>
+      </section>
+
+      <!-- Real-Time Charts Section -->
+      <section class="real-time-charts">
+        <h2>Real-Time Charts</h2>
+        <div class="chart-container">
+          <canvas id="dataTransmissionChart"></canvas>
+        </div>
+        <div class="chart-container">
+          <canvas id="rowsRemainingChart"></canvas>
+        </div>
+      </section>
+
+      <section>
+        <div class="simulation-status">
+          <p>
+            Simulation Status:
+            <span id="simulationStatusText" class="status-active">
+              Active
+            </span>
+            <span class="status-dot status-active-dot"></span>
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <!-- Code Execution Logic -->
+    <section class="logic">
+      <h2>Code Execution Logic</h2>
+      <div class="flowchart-container">
+        <div class="flowchart-step">
+          <div class="step-circle">1</div>
+          <p>Read rows from the Excel dataset.</p>
+        </div>
+        <div class="flowchart-arrow">→</div>
+        <div class="flowchart-step">
+          <div class="step-circle">2</div>
+          <p>Process the current row and send it to the Infra layer.</p>
+        </div>
+        <div class="flowchart-arrow">→</div>
+        <div class="flowchart-step">
+          <div class="step-circle">3</div>
+          <p>Wait for the interval duration (e.g., 5 seconds).</p>
+        </div>
+        <div class="flowchart-step">
+          <div class="step-circle">3</div>
+          <p>Repeat until all rows are processed.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Dataset Overview Section -->
+    <section class="dataset-overview">
+      <h2>Dataset Overview</h2>
+      <p>This table shows the first few rows from the dataset being processed:</p>
+      <div class="table-container">
+        <table id="datasetPreview">
+          <thead>
+            <tr>
+              <th>Row ID</th>
+              <th>Value</th>
+              <th>Category</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Rows will be dynamically added -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Data Distribution Section -->
+    <section class="data-distribution">
+      <h2>Data Distribution</h2>
+      <p>This chart shows how rows are distributed across categories in the dataset:</p>
+      <div class="chart-container">
+        <canvas id="categoryDistributionChart"></canvas>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    let totalRowsProcessed = 0; // Counter for processed rows
+    let processedData = []; // Store processed API data
+    let currentRow = 0; // Track the current row index
+    const maxTableRows = 5; // Maximum number of rows in the table
+    const maxVisibleDataPoints = 15; // Maximum points in charts
+
+    // Fetch data from the API
+    let oidToRowIdMap = {}; // Map to store Oid to numerical rowId mapping
+    let nextRowId = 1; // Counter to generate unique numerical rowIds
+
+    async function fetchDynamicData() {
+      try {
+        const response = await fetch("http://localhost:5001/api/edge/data");
+        const apiData = await response.json();
+
+        // Process and append the API data to processedData
+        apiData.forEach((item) => {
+          // Check if the Oid is already mapped to a numerical rowId
+          if (!oidToRowIdMap[item.Oid]) {
+            oidToRowIdMap[item.Oid] = nextRowId; // Assign a new numerical rowId
+            nextRowId++; // Increment the rowId counter
+          }
+
+          processedData.push({
+            rowId: oidToRowIdMap[item.Oid], // Use the mapped numerical rowId
+            value: item.Value || 0, // Fetch the value key from the API response
+            category: `Category ${Math.ceil(nextRowId / 10)}`, // Example category logic
+          });
+        });
+
+        console.log("Processed Data:", processedData); // Debug: Check if data is fetched and stored correctly
+      } catch (error) {
+        console.error("Error fetching data from API:", error);
+      }
+    }
+
+
+    // Update metrics
+    function updateMetrics() {
+      const rowsRemaining = processedData.length - totalRowsProcessed; // Calculate rows remaining
+      console.log("Updating Metrics - Rows Remaining:", rowsRemaining); // Debugging
+      document.getElementById("totalRowsProcessed").textContent = totalRowsProcessed;
+      document.getElementById("dataSent").textContent = `${totalRowsProcessed} rows`;
+      document.getElementById("remainingRows").textContent = `${rowsRemaining} rows`; // Update rows remaining metric
+    }
+    // Update dataset preview table
+    function updateDatasetPreviewTable(row) {
+      const datasetPreviewTable = document.querySelector("#datasetPreview tbody");
+
+      let valueRange;
+      if (row.value <= 500) valueRange = "Low";
+      else if (row.value <= 1000 && row.value > 500) valueRange = "Medium";
+      else valueRange = "High";
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${row.rowId}</td>
+        <td>${row.value}</td>
+        <td>${valueRange}</td>
+      `;
+      datasetPreviewTable.prepend(tr);
+
+      if (datasetPreviewTable.childElementCount > maxTableRows) {
+        datasetPreviewTable.removeChild(datasetPreviewTable.lastChild);
+      }
+    }
+
+    // Charts initialization
+    const dataTransmissionChart = new Chart(document.getElementById("dataTransmissionChart").getContext("2d"), {
+      type: "line",
+      data: {
+        labels: [],
+        datasets: [{
+          label: "Data Sent",
+          data: [],
+          borderColor: "#29b6f6",
+          backgroundColor: "rgba(41, 182, 246, 0.2)",
+          fill: true,
+        }],
+      },
+      options: { responsive: true },
+    });
+
+    const rowsRemainingChart = new Chart(document.getElementById("rowsRemainingChart").getContext("2d"), {
+      type: "bar",
+      data: {
+        labels: [],
+        datasets: [{
+          label: "Rows Remaining",
+          data: [],
+          backgroundColor: "#8a94b7",
+        }],
+      },
+      options: { responsive: true },
+    });
+
+    const categoryDistributionChart = new Chart(document.getElementById("categoryDistributionChart").getContext("2d"), {
+      type: "bar",
+      data: {
+        labels: ["Low(0-500)", "Medium(501-1000)", "High(>1000)"],
+        datasets: [{
+          label: "Row Count",
+          data: [0, 0, 0],
+          backgroundColor: "#29b6f6",
+        }],
+      },
+      options: { responsive: true },
+    });
+
+    // Update charts
+    function updateCharts(row) {
+      const timestamp = new Date().toLocaleTimeString();
+
+      dataTransmissionChart.data.labels.push(timestamp);
+      dataTransmissionChart.data.datasets[0].data.push(totalRowsProcessed);
+
+      rowsRemainingChart.data.labels.push(timestamp);
+      rowsRemainingChart.data.datasets[0].data.push(processedData.length - totalRowsProcessed);
+
+      if (dataTransmissionChart.data.labels.length > maxVisibleDataPoints) {
+        dataTransmissionChart.data.labels.shift();
+        dataTransmissionChart.data.datasets[0].data.shift();
+      }
+
+      if (rowsRemainingChart.data.labels.length > maxVisibleDataPoints) {
+        rowsRemainingChart.data.labels.shift();
+        rowsRemainingChart.data.datasets[0].data.shift();
+      }
+
+      dataTransmissionChart.update();
+      rowsRemainingChart.update();
+
+      if (row.value <= 500) categoryDistributionChart.data.datasets[0].data[0]++;
+      else if (row.value <= 1000 && row.value > 500) categoryDistributionChart.data.datasets[0].data[1]++;
+      else categoryDistributionChart.data.datasets[0].data[2]++;
+
+      categoryDistributionChart.update();
+    }
+
+    let lastDataFlowTimestamp = Date.now(); // Track the timestamp of the last data flow
+    const inactivityThreshold = 10000; // Set threshold for inactivity in milliseconds (e.g., 10 seconds)
+
+    function simulateDataIngestion() {
+      const currentTime = Date.now();
+
+      if (currentRow < processedData.length) {
+        const newRow = processedData[currentRow];
+        currentRow++;
+        totalRowsProcessed++;
+
+        // Update the last data flow timestamp
+        lastDataFlowTimestamp = currentTime;
+
+        updateDatasetPreviewTable(newRow);
+        updateMetrics();
+        updateCharts(newRow);
+
+        // Set the status to active
+        document.getElementById("simulationStatusText").textContent = "Active";
+        document.getElementById("simulationStatusText").classList.remove("status-inactive");
+        document.getElementById("simulationStatusText").classList.add("status-active");
+        document.querySelector(".status-dot").classList.remove("status-inactive-dot");
+        document.querySelector(".status-dot").classList.add("status-active-dot");
+      } else if (currentTime - lastDataFlowTimestamp > inactivityThreshold) {
+        // Switch to inactive status if no data flow for the threshold duration
+        document.getElementById("simulationStatusText").textContent = "Inactive";
+        document.getElementById("simulationStatusText").classList.remove("status-active");
+        document.getElementById("simulationStatusText").classList.add("status-inactive");
+        document.querySelector(".status-dot").classList.remove("status-active-dot");
+        document.querySelector(".status-dot").classList.add("status-inactive-dot");
+      }
+    }
+
+    function startSimulation() {
+      setInterval(simulateDataIngestion, 5000); // Process rows every 5 seconds
+      setInterval(fetchDynamicData, 5000); // Fetch new data every 5 seconds
+    }
+
+    fetchDynamicData().then(startSimulation);
+  </script>
+</body>
+
+</html>
